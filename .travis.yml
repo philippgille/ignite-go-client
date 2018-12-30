@@ -1,0 +1,30 @@
+# Sudo is required for running Docker
+sudo: required
+
+services:
+  - docker
+
+git:
+  depth: 1
+
+language: go
+
+go:
+  - "1.10"
+
+before_install:
+  - go version
+  - go env
+
+script:
+  # Build
+  - go build -v binary/... debug/... sql/...
+  # Start Apache Ignite server in Docker container
+  - docker run -d --rm --name ignite -v $(pwd)/testdata:/tmp/testdata -e "CONFIG_URI=/tmp/testdata/configuration-for-tests.xml" --network host apacheignite/ignite
+  - sleep 10s
+  - docker logs ignite
+  # TODO: Activating the cluster currently fails.
+  # The reason might be the configuration because it works with Ignite's "examples/config/example-cache.xml".
+  - docker exec -it ignite apache-ignite/bin/control.sh --activate
+  # Test
+  - go test -v -race ./...

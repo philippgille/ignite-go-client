@@ -729,9 +729,11 @@
                 <property name="sslClientAuth" value="false"/>
                 <property name="sslContextFactory">
                     <bean class="org.apache.ignite.ssl.SslContextFactory">
-                        <property name="keyStoreFilePath" value="./ssl/server.jks"/>
+                        <!-- The testdata directory is mounted to /tmp/testdata in the Docker container that runs in Travis CI -->
+                        <property name="keyStoreFilePath" value="/tmp/testdata/ssl/server.jks"/>
                         <property name="keyStorePassword" value="123456"/>
-                        <property name="trustStoreFilePath" value="./ssl/trust.jks"/>
+                        <!-- The testdata directory is mounted to /tmp/testdata in the Docker container that runs in Travis CI -->
+                        <property name="trustStoreFilePath" value="/tmp/testdata/ssl/trust.jks"/>
                         <property name="trustStorePassword" value="123456"/>
                     </bean>
                 </property>
